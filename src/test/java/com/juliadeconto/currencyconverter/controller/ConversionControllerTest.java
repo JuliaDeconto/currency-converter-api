@@ -76,4 +76,14 @@ public class ConversionControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Currency pair not found"));
     }
+
+    @Test
+    void shouldReturnBadRequestWhenParameterIsMissing() throws Exception {
+
+        mockMvc.perform(get("/convert")
+                .param("from", "USD")
+                .param("to", "BRL"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Missing required parameter"));
+    }
 }
