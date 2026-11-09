@@ -37,4 +37,26 @@ public class ConversionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(500.00));
     }
+
+    @Test
+    void shouldReturnBadRequestWhenCurrencyIsBlank() throws Exception {
+
+        mockMvc.perform(get("/convert")
+                        .param("from", " ")
+                        .param("to", "BRL")
+                        .param("amount", "100"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Currency codes must not be blank"));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenAmountIsNotNumber() throws Exception {
+
+        mockMvc.perform(get("/convert")
+                        .param("from", "USD")
+                        .param("to", "BRL")
+                        .param("amount", "abc"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid amount: must be a number"));
+    }
 }
