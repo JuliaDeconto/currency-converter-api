@@ -61,6 +61,25 @@ json
 
 The rate is the bid price returned by AwesomeAPI, and result is rounded to 2 decimal places.
 
+## Error Handling
+When something goes wrong, the API returns a JSON body with the HTTP status and a descriptive message.
+
+| Status | Cause                      | Message                              |
+|--------|----------------------------|--------------------------------------|
+| 400    | Blank currency code        | Currency codes must not be blank   |
+| 400    | Amount is not a number     | Invalid amount: must be a number   |
+| 400    | Missing required parameter | Missing required parameter         |
+| 404    | Currency pair not found    | Currency pair not found            |
+
+*Example error response:*
+
+```json
+{
+"status": 404,
+"message": "Currency pair not found"
+}
+```
+
 ## Project Structure
 
 
