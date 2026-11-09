@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,5 +17,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO error = new ErrorResponseDTO(404, "Currency pair not found");
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidAmount() {
+
+        ErrorResponseDTO error = new ErrorResponseDTO(400, "Invalid amount: must be a number");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }
