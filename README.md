@@ -19,11 +19,13 @@ REST API that converts amounts between currencies using real-time exchange rates
 
 ### Running the project
 
-bash
+```bash
 git clone https://github.com/JuliaDeconto/currency-converter-api.git
 cd currency-converter-api
-mvnw spring-boot:run
+./mvnw spring-boot:run
+```
 
+- On Windows, use mvnw spring-boot:run (without ./).
 
 The server starts on http://localhost:8080.
 
@@ -34,12 +36,13 @@ The server starts on http://localhost:8080.
 
 GET /convert?from={currency}&to={currency}&amount={value}
 
-
+```
 | Parameter | Description                    | Example |
 |-----------|--------------------------------|---------|
 | from    | Source currency code           | USD   |
 | to      | Target currency code           | BRL   |
 | amount  | Amount to convert              | 100   |
+```
 
 *Example request:*
 
@@ -49,7 +52,7 @@ http://localhost:8080/convert?from=USD&to=BRL&amount=100
 
 *Example response:*
 
-json
+```json
 {
 "from": "USD",
 "to": "BRL",
@@ -57,19 +60,21 @@ json
 "amount": 100,
 "result": 550.5
 }
-
+```
 
 The rate is the bid price returned by AwesomeAPI, and result is rounded to 2 decimal places.
 
 ## Error Handling
 When something goes wrong, the API returns a JSON body with the HTTP status and a descriptive message.
 
-| Status | Cause                      | Message                              |
-|--------|----------------------------|--------------------------------------|
+```
+| Status | Cause                      | Message                            |
+|--------|----------------------------|------------------------------------|
 | 400    | Blank currency code        | Currency codes must not be blank   |
 | 400    | Amount is not a number     | Invalid amount: must be a number   |
 | 400    | Missing required parameter | Missing required parameter         |
 | 404    | Currency pair not found    | Currency pair not found            |
+```
 
 *Example error response:*
 
@@ -80,18 +85,33 @@ When something goes wrong, the API returns a JSON body with the HTTP status and 
 }
 ```
 
+## Running Tests
+
+The tests use JUnit 5 and MockMvc. The QuoteService is replaced by a mock, so they run offline and do not call AwesomeAPI.
+
+```bash
+./mvnw test
+```
+
+- On Windows, use mvnw test (without ./).
+
 ## Project Structure
 
-
-src/main/java/com/juliadeconto/currencyconverter
-├── config       # Bean configuration (RestTemplate)
-├── controller   # REST endpoints
-├── dto          # Data transfer objects
-└── service      # Business logic and external API integration
-
+```
+src
+├── main/java/com/juliadeconto/currencyconverter
+│   ├── config       # Bean configuration (RestTemplate)
+│   ├── controller   # REST endpoints
+│   ├── dto          # Data transfer objects
+│   ├── exception    # Global error handling
+│   └── service      # Business logic and external API integration
+└── test/java/com/juliadeconto/currencyconverter
+└── controller   # Controller tests (MockMvc)
+```
 
 ## How It Works
 
 1. The controller receives the request with the currencies and amount.
 2. The service calls AwesomeAPI to fetch the current exchange rate.
 3. The controller multiplies the amount by the rate and returns the result.
+4. Invalid requests or unknown currency pairs return a JSON error with the appropriate HTTP status.
