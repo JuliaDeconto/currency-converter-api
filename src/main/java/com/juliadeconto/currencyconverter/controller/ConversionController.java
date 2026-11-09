@@ -25,6 +25,10 @@ public class ConversionController {
             @RequestParam String to,
             @RequestParam BigDecimal amount) {
 
+        if (from.isBlank() || to.isBlank()) {
+            throw new IllegalArgumentException("Currency codes must not be blank");
+        }
+
         QuoteDTO quote = quoteService.getQuote(from, to);
 
         BigDecimal rate = new BigDecimal(quote.getBid());
