@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @RestController
 @RequestMapping("/convert")
@@ -27,5 +28,9 @@ public class ConversionController {
         QuoteDTO quote = quoteService.getQuote(from, to);
 
         BigDecimal rate = new BigDecimal(quote.getBid());
+
+        BigDecimal result = amount.multiply(rate).setScale(2, RoundingMode.HALF_UP);
+
+        return new ConversionResponseDTO(from, to, rate, amount, result);
     }
 }
