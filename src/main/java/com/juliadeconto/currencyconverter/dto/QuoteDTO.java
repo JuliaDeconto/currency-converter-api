@@ -1,4 +1,4 @@
-package com.juliadeconto.currencyconverter.DTO;
+package com.juliadeconto.currencyconverter.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
