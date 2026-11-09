@@ -3,6 +3,7 @@ package com.juliadeconto.currencyconverter.exception;
 import com.juliadeconto.currencyconverter.dto.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,6 +24,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleInvalidAmount() {
 
         ErrorResponseDTO error = new ErrorResponseDTO(400, "Invalid amount: must be a number");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMissingParam() {
+
+        ErrorResponseDTO error = new ErrorResponseDTO(400, "Missing required parameter");
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
