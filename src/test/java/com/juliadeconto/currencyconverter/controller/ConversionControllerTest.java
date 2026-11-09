@@ -5,8 +5,11 @@ import com.juliadeconto.currencyconverter.service.QuoteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.HttpClientErrorException;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -58,5 +61,19 @@ public class ConversionControllerTest {
                         .param("amount", "abc"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Invalid amount: must be a number"));
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenCurrencyPairDoesNotExist() throws Exception {
+
+        when(quoteService.getQuote("XXX", "BRL"))
+                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+        mockMvc.perform(get("/convert")
+                .param("from", "XXX")
+                .param("to", "BRL")
+                .param("amount", "100"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Currency pair not found"));
     }
 }
