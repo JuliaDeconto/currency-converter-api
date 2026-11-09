@@ -1,6 +1,7 @@
 package com.juliadeconto.currencyconverter.controller;
 
 import com.juliadeconto.currencyconverter.dto.ConversionResponseDTO;
+import com.juliadeconto.currencyconverter.dto.QuoteDTO;
 import com.juliadeconto.currencyconverter.service.QuoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,5 +24,8 @@ public class ConversionController {
             @RequestParam String to,
             @RequestParam BigDecimal amount) {
 
+        QuoteDTO quote = quoteService.getQuote(from, to);
+
+        BigDecimal rate = new BigDecimal(quote.getBid());
     }
 }
